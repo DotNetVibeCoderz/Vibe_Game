@@ -1,0 +1,115 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:BoardGames.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        x:Class="BoardGames.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon=""
+        Title="{Binding Title}"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Panel>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+
+        <!-- Main Content -->
+        <DockPanel Margin="40">
+            <!-- Header -->
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="20" HorizontalAlignment="Center" Margin="0,0,0,20">
+                <TextBlock Text="{Binding Title}" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding TimerText}" FontSize="20" VerticalAlignment="Center" Foreground="Cyan"/>
+            </StackPanel>
+
+            <!-- Status Bar -->
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
+                <TextBlock Text="{Binding StatusMessage}" FontSize="16"/>
+                <TextBlock Text="P1 Score:" FontWeight="Bold"/>
+                <TextBlock Text="{Binding Score1}"/>
+                <TextBlock Text="P2 Score:" FontWeight="Bold"/>
+                <TextBlock Text="{Binding Score2}"/>
+            </StackPanel>
+
+            <!-- Game Board Area -->
+            <Grid IsVisible="{Binding IsGameVisible}">
+                <Button Command="{Binding BackToMenuCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Back to Menu" />
+                
+                <Border BorderBrush="Gray" BorderThickness="2" CornerRadius="5" Padding="5" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ItemsControl ItemsSource="{Binding BoardCells}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="{Binding Columns}" Columns="{Binding Columns}" Width="400" Height="400"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding $parent[Window].DataContext.CellClickedCommand}" 
+                                        CommandParameter="{Binding}"
+                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                        Margin="2">
+                                    <Panel>
+                                        <!-- For Othello/Checkers pieces -->
+                                        <Ellipse Width="30" Height="30" Fill="{Binding Color}" 
+                                                 IsVisible="{Binding Color, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                                        <!-- For TicTacToe Text or King marker -->
+                                        <TextBlock Text="{Binding Text}" FontSize="20" FontWeight="Bold" Foreground="White" 
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Panel>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </Grid>
+
+            <!-- Menu Area -->
+            <StackPanel IsVisible="{Binding IsMenuVisible}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10" Width="300">
+                <TextBlock Text="Select Game" FontSize="20" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                
+                <Button Command="{Binding SelectGameCommand}" CommandParameter="Othello" Content="Othello" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <Button Command="{Binding SelectGameCommand}" CommandParameter="Checkers" Content="Checkers" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <Button Command="{Binding SelectGameCommand}" CommandParameter="TicTacToe" Content="Tic Tac Toe" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+
+                <Separator Margin="0,10"/>
+                
+                <TextBlock Text="Settings" FontSize="16" HorizontalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                    <TextBlock Text="Difficulty:" VerticalAlignment="Center"/>
+                    <ComboBox SelectedIndex="{Binding Difficulty}">
+                        <ComboBoxItem>Beginner</ComboBoxItem>
+                        <ComboBoxItem>Intermediate</ComboBoxItem>
+                        <ComboBoxItem>Expert</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                    <TextBlock Text="Mode:" VerticalAlignment="Center"/>
+                    <ComboBox SelectedIndex="{Binding Opponent}">
+                        <ComboBoxItem>Human vs Human</ComboBoxItem>
+                        <ComboBoxItem>Human vs AI</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+
+                 <TextBlock Text="About" FontSize="16" HorizontalAlignment="Center" Margin="0,20,0,0"/>
+                 <TextBlock Text="Created by Jacky the Code Bender" FontSize="12" HorizontalAlignment="Center" Foreground="Gray"/>
+                 <TextBlock Text="(Gravicode Studios)" FontSize="12" HorizontalAlignment="Center" Foreground="Gray"/>
+            </StackPanel>
+
+        </DockPanel>
+    </Panel>
+</Window>
