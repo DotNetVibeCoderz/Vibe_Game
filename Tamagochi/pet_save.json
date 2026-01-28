@@ -1,1 +1,1 @@
-{"Name":"MyPet","Type":2,"Stage":1,"Hunger":25,"Hygiene":84,"Energy":89,"Happiness":100,"Health":100,"BirthDate":"2026-01-26T18:34:45.1947783+07:00","LastUpdate":"2026-01-26T18:36:23.2129361+07:00","IsSick":false,"IsDirty":false,"IsHungry":false,"IsTired":false,"CurrentEmotion":0}
+{"Name":"NewPet","Type":1,"Stage":1,"Hunger":6,"Hygiene":89,"Energy":87,"Happiness":100,"Health":100,"BirthDate":"2026-01-27T15:02:36.728824+07:00","LastUpdate":"2026-01-27T15:03:03.6101194+07:00","IsSick":false,"IsDirty":false,"IsHungry":false,"IsTired":false,"CurrentEmotion":0}
