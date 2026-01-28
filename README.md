@@ -1,4 +1,6 @@
-<<<<<<< HEAD
+# Vibe_Game
+Game projects that created by Budax - AI App Generator
+
 # Project Summaries
 
 ## Board Games Collection
@@ -47,7 +49,4 @@
 **English**: A digital pet simulator with a pixel art style, allowing interaction and monitoring of pet needs.
 
 **Bahasa Indonesia**: Aplikasi simulasi hewan peliharaan digital dengan gaya pixel art yang interaktif.
-=======
-# Vibe_Game
-Game projects that created by Budax - AI App Generator
->>>>>>> 0578a22a9b9f0c3da7884229e14d0cbad851a0f5
+
