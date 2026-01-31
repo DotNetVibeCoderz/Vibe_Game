@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        x:Class="CrossyGame.MainWindow"
+        Title="Crossy Game"
+        Width="800" Height="600"
+        KeyDown="OnKeyDown">
+    
+    <Grid>
+        <!-- Game World -->
+        <Border Background="#87CEEB"> <!-- Sky/Background color -->
+            <Canvas Name="GameCanvas" Background="Transparent" />
+        </Border>
+        
+        <!-- UI Overlay -->
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10">
+            <TextBlock Name="ScoreText" Text="Score: 0" FontSize="24" FontWeight="Bold" Foreground="White">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="2" Opacity="0.8" />
+                </TextBlock.Effect>
+            </TextBlock>
+             <TextBlock Name="GameOverText" Text="GAME OVER - Press R to Restart" FontSize="30" FontWeight="Bold" Foreground="Red" IsVisible="False">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="White" BlurRadius="2" Opacity="0.8" />
+                </TextBlock.Effect>
+            </TextBlock>
+        </StackPanel>
+    </Grid>
+</Window>
