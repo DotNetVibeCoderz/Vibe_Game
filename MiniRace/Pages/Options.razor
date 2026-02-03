@@ -1,0 +1,79 @@
+@page "/options"
+@using MiniRace.Services
+@using Microsoft.AspNetCore.Components.Web
+@inject GameStateService GameState
+@inject NavigationManager Nav
+@rendermode RenderMode.InteractiveServer
+
+<div class="options-container">
+    <h1>OPTIONS</h1>
+
+    <div class="option-group">
+        <label>Car Color</label>
+        <div class="color-picker">
+            @foreach (var color in colors)
+            {
+                <div class="color-circle @(GameState.Settings.CarColor == color ? "selected" : "")" 
+                     style="background-color: @color"
+                     @onclick="() => SelectColor(color)"></div>
+            }
+        </div>
+    </div>
+
+    <div class="option-group">
+        <label>Difficulty</label>
+        <select @bind="GameState.Settings.Difficulty" class="form-select">
+            <option value="easy">Easy (1 Enemy)</option>
+            <option value="medium">Medium (3 Enemies)</option>
+            <option value="hard">Hard (5 Enemies)</option>
+        </select>
+    </div>
+
+    <div class="actions">
+        <button class="btn-save" @onclick="SaveAndBack">SAVE & BACK</button>
+    </div>
+</div>
+
+<style>
+    .options-container {
+        height: 100vh;
+        background-color: #222;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: sans-serif;
+    }
+    
+    .option-group { margin-bottom: 2rem; text-align: center; }
+    
+    .color-picker { display: flex; gap: 10px; margin-top: 10px; }
+    
+    .color-circle {
+        width: 50px; height: 50px; border-radius: 50%; cursor: pointer;
+        border: 3px solid transparent;
+    }
+    
+    .color-circle.selected { border-color: white; transform: scale(1.1); }
+
+    .btn-save {
+        padding: 10px 30px; font-size: 1.2rem; background: #4CAF50; color: white; border: none; cursor: pointer;
+    }
+    
+    .form-select { padding: 10px; font-size: 1rem; }
+</style>
+
+@code {
+    private List<string> colors = new() { "#FF0000", "#0000FF", "#008000", "#FFFF00", "#FFA500" };
+
+    private void SelectColor(string color)
+    {
+        GameState.Settings.CarColor = color;
+    }
+
+    private void SaveAndBack()
+    {
+        Nav.NavigateTo("/");
+    }
+}

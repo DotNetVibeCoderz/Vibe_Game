@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MiniRace</title>
+    <base href="/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="MiniRace.styles.css" rel="stylesheet" />
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #1a1a1a; color: white; }
+        #game-container { width: 100vw; height: 100vh; display: block; }
+        .ui-overlay { position: absolute; top: 0; left: 0; width: 100%; pointer-events: none; }
+        .ui-element { pointer-events: auto; }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); text-align:center; color:white;">
+            <h1>Loading MiniRace...</h1>
+            <div class="spinner-border" role="status"></div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Game Engine -->
+    <script src="js/engine.js"></script>
+    
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+
+</html>

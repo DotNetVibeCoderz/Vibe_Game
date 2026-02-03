@@ -1,0 +1,114 @@
+@page "/game"
+@using MiniRace.Services
+@using MiniRace.Helpers
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components.Web
+@inject IJSRuntime JS
+@inject GameStateService GameState
+@inject NavigationManager Nav
+@implements IDisposable
+@rendermode RenderMode.InteractiveServer
+
+<div class="game-wrapper">
+    <!-- 3D Canvas Container -->
+    <div id="game-container"></div>
+
+    <!-- HUD Overlay -->
+    <div class="hud-overlay">
+        <div class="top-left">
+            <div class="stat-box">
+                <span class="label">SPEED</span>
+                <span class="value">@currentSpeed km/h</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">ENEMIES</span>
+                <span class="value">@enemiesLeft</span>
+            </div>
+        </div>
+
+        <div class="controls-hint">
+            WASD to Drive | SPACE to Shoot
+        </div>
+
+        <button class="btn-exit" @onclick="ExitGame">QUIT</button>
+    </div>
+</div>
+
+<style>
+    .game-wrapper { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+    #game-container { width: 100%; height: 100%; background: black; }
+    
+    .hud-overlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
+        padding: 20px; box-sizing: border-box;
+    }
+    
+    .top-left { display: flex; gap: 20px; }
+    
+    .stat-box {
+        background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 10px;
+        border: 2px solid rgba(255,255,255,0.2); color: white;
+        font-family: 'Courier New', Courier, monospace;
+        display: flex; flex-direction: column; align-items: center;
+    }
+    
+    .stat-box .label { font-size: 0.8rem; color: #aaa; }
+    .stat-box .value { font-size: 1.5rem; font-weight: bold; color: #0ff; }
+    
+    .controls-hint {
+        position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+        color: rgba(255,255,255,0.7); font-family: sans-serif;
+    }
+
+    .btn-exit {
+        pointer-events: auto; position: absolute; top: 20px; right: 20px;
+        background: #f44336; color: white; border: none; padding: 5px 15px;
+        font-weight: bold; cursor: pointer; border-radius: 5px;
+    }
+</style>
+
+@code {
+    private int currentSpeed = 0;
+    private int enemiesLeft = 0;
+    private DotNetObjectReference<Game>? dotNetRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            dotNetRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("miniRace.init", dotNetRef);
+            await StartGame();
+        }
+    }
+
+    private async Task StartGame()
+    {
+        var color = GameState.Settings.CarColor;
+        var difficulty = GameState.Settings.Difficulty;
+        await JS.InvokeVoidAsync("miniRace.startGame", color, difficulty);
+    }
+
+    [JSInvokable]
+    public void UpdateGameState(GameStateData data)
+    {
+        currentSpeed = data.Speed;
+        enemiesLeft = data.EnemiesLeft;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void ExitGame()
+    {
+        Nav.NavigateTo("/");
+    }
+
+    public void Dispose()
+    {
+        try {
+            // Fire and forget, don't await in Dispose
+            JS.InvokeVoidAsync("miniRace.stopGame");
+        } catch {}
+        
+        dotNetRef?.Dispose();
+    }
+}
