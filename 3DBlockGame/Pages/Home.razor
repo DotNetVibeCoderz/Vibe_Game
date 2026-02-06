@@ -1,0 +1,41 @@
+@page "/"
+@inject IJSRuntime JSRuntime
+
+<PageTitle>3D Block Game</PageTitle>
+
+<div id="game-container"></div>
+
+<div id="ui-layer">
+    <div id="instructions" class="instruction">
+        <h1>Click to Play</h1>
+        <p>
+            Move: W, A, S, D<br/>
+            Jump: SPACE<br/>
+            Look: MOUSE<br/>
+            Break Block: Left Click<br/>
+            Place Block: Right Click<br/>
+            Select Block: 1-5
+        </p>
+    </div>
+</div>
+
+<div id="crosshair"></div>
+
+<div id="block-selector">
+    <!-- These match the IDs in game.js materials array -->
+    <div class="slot active" style="background-color: #567d46;" title="Grass (1)"></div>
+    <div class="slot" style="background-color: #5d4037;" title="Dirt (2)"></div>
+    <div class="slot" style="background-color: #757575;" title="Stone (3)"></div>
+    <div class="slot" style="background-color: #795548;" title="Wood (4)"></div>
+    <div class="slot" style="background-color: #4caf50;" title="Leaves (5)"></div>
+</div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("MinecraftClone.init", "game-container");
+        }
+    }
+}

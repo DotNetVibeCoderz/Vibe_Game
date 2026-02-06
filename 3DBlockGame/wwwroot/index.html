@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>3DBlockGame - Minecraft Clone</title>
+    <base href="/" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="3DBlockGame.styles.css" rel="stylesheet" />
+    
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #game-container { width: 100vw; height: 100vh; display: block; }
+        #ui-layer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            pointer-events: none;
+            user-select: none;
+        }
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background-color: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10;
+        }
+        .instruction {
+            background: rgba(0,0,0,0.5);
+            padding: 20px;
+            border-radius: 10px;
+            pointer-events: auto; /* Allow clicking start button */
+        }
+        #block-selector {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+        }
+        .slot {
+            width: 40px;
+            height: 40px;
+            border: 2px solid gray;
+            background-size: cover;
+        }
+        .slot.active {
+            border-color: white;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:white;">
+            Loading 3D Engine...
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
+
+    <!-- Three.js Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+    
+    <!-- Game Engine -->
+    <script src="js/game.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+
+</html>
