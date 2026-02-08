@@ -17,185 +17,240 @@ namespace Tamagochi
 
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.gameTimer = new System.Windows.Forms.Timer(this.components);
-            this.renderTimer = new System.Windows.Forms.Timer(this.components);
-            
-            this.pbPet = new System.Windows.Forms.PictureBox();
-            
-            this.lblHunger = new System.Windows.Forms.Label();
-            this.progHunger = new System.Windows.Forms.ProgressBar();
-            
-            this.lblHygiene = new System.Windows.Forms.Label();
-            this.progHygiene = new System.Windows.Forms.ProgressBar();
-            
-            this.lblHappiness = new System.Windows.Forms.Label();
-            this.progHappiness = new System.Windows.Forms.ProgressBar();
-            
-            this.lblEnergy = new System.Windows.Forms.Label();
-            this.progEnergy = new System.Windows.Forms.ProgressBar();
-            
-            this.lblHealth = new System.Windows.Forms.Label();
-            this.progHealth = new System.Windows.Forms.ProgressBar();
-            
-            this.btnFeed = new System.Windows.Forms.Button();
-            this.btnClean = new System.Windows.Forms.Button();
-            this.btnPlay = new System.Windows.Forms.Button();
-            this.btnHeal = new System.Windows.Forms.Button();
-            this.btnSleep = new System.Windows.Forms.Button();
-            this.btnReset = new System.Windows.Forms.Button();
-            
-            this.lblStatus = new System.Windows.Forms.Label();
-            this.cmbPetType = new System.Windows.Forms.ComboBox();
-            this.lblType = new System.Windows.Forms.Label();
-
-            ((System.ComponentModel.ISupportInitialize)(this.pbPet)).BeginInit();
-            this.SuspendLayout();
-            
+            components = new System.ComponentModel.Container();
+            gameTimer = new System.Windows.Forms.Timer(components);
+            renderTimer = new System.Windows.Forms.Timer(components);
+            pbPet = new PictureBox();
+            lblHunger = new Label();
+            progHunger = new ProgressBar();
+            lblHygiene = new Label();
+            progHygiene = new ProgressBar();
+            lblHappiness = new Label();
+            progHappiness = new ProgressBar();
+            lblEnergy = new Label();
+            progEnergy = new ProgressBar();
+            lblHealth = new Label();
+            progHealth = new ProgressBar();
+            btnFeed = new Button();
+            btnClean = new Button();
+            btnPlay = new Button();
+            btnHeal = new Button();
+            btnSleep = new Button();
+            btnReset = new Button();
+            lblStatus = new Label();
+            cmbPetType = new ComboBox();
+            lblType = new Label();
+            ((System.ComponentModel.ISupportInitialize)pbPet).BeginInit();
+            SuspendLayout();
             // 
             // gameTimer
             // 
-            this.gameTimer.Interval = 1000;
-            this.gameTimer.Tick += new System.EventHandler(this.gameTimer_Tick);
-            
+            gameTimer.Interval = 1000;
+            gameTimer.Tick += gameTimer_Tick;
             // 
             // renderTimer
             // 
-            this.renderTimer.Interval = 100; // 10 FPS animation
-            this.renderTimer.Tick += new System.EventHandler(this.renderTimer_Tick);
-
+            renderTimer.Tick += renderTimer_Tick;
             // 
             // pbPet
             // 
-            this.pbPet.Location = new System.Drawing.Point(12, 50);
-            this.pbPet.Name = "pbPet";
-            this.pbPet.Size = new System.Drawing.Size(460, 300);
-            this.pbPet.TabIndex = 0;
-            this.pbPet.TabStop = false;
-            this.pbPet.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.pbPet.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-
-            // Stats Layout Variables
-            int startY = 370;
-            int gapY = 30;
-            int labelX = 20;
-            int progX = 100;
-            int progW = 350;
-            int progH = 20;
-
-            // Hunger
-            this.lblHunger.Text = "Hunger:";
-            this.lblHunger.Location = new System.Drawing.Point(labelX, startY);
-            this.progHunger.Location = new System.Drawing.Point(progX, startY);
-            this.progHunger.Size = new System.Drawing.Size(progW, progH);
-
-            // Hygiene
-            this.lblHygiene.Text = "Hygiene:";
-            this.lblHygiene.Location = new System.Drawing.Point(labelX, startY + gapY);
-            this.progHygiene.Location = new System.Drawing.Point(progX, startY + gapY);
-            this.progHygiene.Size = new System.Drawing.Size(progW, progH);
-
-            // Happiness
-            this.lblHappiness.Text = "Happiness:";
-            this.lblHappiness.Location = new System.Drawing.Point(labelX, startY + gapY * 2);
-            this.progHappiness.Location = new System.Drawing.Point(progX, startY + gapY * 2);
-            this.progHappiness.Size = new System.Drawing.Size(progW, progH);
-
-            // Energy
-            this.lblEnergy.Text = "Energy:";
-            this.lblEnergy.Location = new System.Drawing.Point(labelX, startY + gapY * 3);
-            this.progEnergy.Location = new System.Drawing.Point(progX, startY + gapY * 3);
-            this.progEnergy.Size = new System.Drawing.Size(progW, progH);
-            
-            // Health
-            this.lblHealth.Text = "Health:";
-            this.lblHealth.Location = new System.Drawing.Point(labelX, startY + gapY * 4);
-            this.progHealth.Location = new System.Drawing.Point(progX, startY + gapY * 4);
-            this.progHealth.Size = new System.Drawing.Size(progW, progH);
-
-            // Buttons
-            int btnY = startY + gapY * 5 + 10;
-            int btnW = 70;
-            int btnH = 40;
-            int btnGap = 5;
-
-            this.btnFeed.Text = "Feed";
-            this.btnFeed.Location = new System.Drawing.Point(20, btnY);
-            this.btnFeed.Size = new System.Drawing.Size(btnW, btnH);
-            this.btnFeed.Click += new System.EventHandler(this.btnFeed_Click);
-
-            this.btnClean.Text = "Clean";
-            this.btnClean.Location = new System.Drawing.Point(20 + (btnW + btnGap), btnY);
-            this.btnClean.Size = new System.Drawing.Size(btnW, btnH);
-            this.btnClean.Click += new System.EventHandler(this.btnClean_Click);
-
-            this.btnPlay.Text = "Play";
-            this.btnPlay.Location = new System.Drawing.Point(20 + (btnW + btnGap)*2, btnY);
-            this.btnPlay.Size = new System.Drawing.Size(btnW, btnH);
-            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
-            
-            this.btnSleep.Text = "Sleep";
-            this.btnSleep.Location = new System.Drawing.Point(20 + (btnW + btnGap)*3, btnY);
-            this.btnSleep.Size = new System.Drawing.Size(btnW, btnH);
-            this.btnSleep.Click += new System.EventHandler(this.btnSleep_Click);
-
-            this.btnHeal.Text = "Heal";
-            this.btnHeal.Location = new System.Drawing.Point(20 + (btnW + btnGap)*4, btnY);
-            this.btnHeal.Size = new System.Drawing.Size(btnW, btnH);
-            this.btnHeal.Click += new System.EventHandler(this.btnHeal_Click);
-            
-            this.btnReset.Text = "Reset";
-            this.btnReset.Location = new System.Drawing.Point(400, btnY); // Far right
-            this.btnReset.Size = new System.Drawing.Size(btnW, btnH);
-            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
-
-            // Top Panel
-            this.lblType.Text = "Type:";
-            this.lblType.Location = new System.Drawing.Point(12, 15);
-            this.lblType.AutoSize = true;
-
-            this.cmbPetType.Location = new System.Drawing.Point(60, 12);
-            this.cmbPetType.Size = new System.Drawing.Size(100, 25);
-            this.cmbPetType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbPetType.SelectedIndexChanged += new System.EventHandler(this.cmbPetType_SelectedIndexChanged);
-
-            this.lblStatus.Text = "Status: OK";
-            this.lblStatus.Location = new System.Drawing.Point(200, 15);
-            this.lblStatus.AutoSize = true;
-            this.lblStatus.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-
-            // Form
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(500, 600);
-            this.Text = "Tamagochi - By Jacky";
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-
-            this.Controls.Add(this.lblType);
-            this.Controls.Add(this.cmbPetType);
-            this.Controls.Add(this.lblStatus);
-            this.Controls.Add(this.pbPet);
-            this.Controls.Add(this.lblHunger);
-            this.Controls.Add(this.progHunger);
-            this.Controls.Add(this.lblHygiene);
-            this.Controls.Add(this.progHygiene);
-            this.Controls.Add(this.lblHappiness);
-            this.Controls.Add(this.progHappiness);
-            this.Controls.Add(this.lblEnergy);
-            this.Controls.Add(this.progEnergy);
-            this.Controls.Add(this.lblHealth);
-            this.Controls.Add(this.progHealth);
-            this.Controls.Add(this.btnFeed);
-            this.Controls.Add(this.btnClean);
-            this.Controls.Add(this.btnPlay);
-            this.Controls.Add(this.btnSleep);
-            this.Controls.Add(this.btnHeal);
-            this.Controls.Add(this.btnReset);
-
-            ((System.ComponentModel.ISupportInitialize)(this.pbPet)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            pbPet.BackColor = Color.WhiteSmoke;
+            pbPet.BorderStyle = BorderStyle.Fixed3D;
+            pbPet.Location = new Point(12, 82);
+            pbPet.Name = "pbPet";
+            pbPet.Size = new Size(460, 300);
+            pbPet.TabIndex = 0;
+            pbPet.TabStop = false;
+            // 
+            // lblHunger
+            // 
+            lblHunger.Location = new Point(20, 370);
+            lblHunger.Name = "lblHunger";
+            lblHunger.Size = new Size(100, 23);
+            lblHunger.TabIndex = 3;
+            lblHunger.Text = "Hunger:";
+            // 
+            // progHunger
+            // 
+            progHunger.Location = new Point(100, 370);
+            progHunger.Name = "progHunger";
+            progHunger.Size = new Size(350, 20);
+            progHunger.TabIndex = 4;
+            // 
+            // lblHygiene
+            // 
+            lblHygiene.Location = new Point(20, 370);
+            lblHygiene.Name = "lblHygiene";
+            lblHygiene.Size = new Size(100, 23);
+            lblHygiene.TabIndex = 5;
+            lblHygiene.Text = "Hygiene:";
+            // 
+            // progHygiene
+            // 
+            progHygiene.Location = new Point(100, 370);
+            progHygiene.Name = "progHygiene";
+            progHygiene.Size = new Size(350, 20);
+            progHygiene.TabIndex = 6;
+            // 
+            // lblHappiness
+            // 
+            lblHappiness.Location = new Point(20, 370);
+            lblHappiness.Name = "lblHappiness";
+            lblHappiness.Size = new Size(100, 23);
+            lblHappiness.TabIndex = 7;
+            lblHappiness.Text = "Happiness:";
+            // 
+            // progHappiness
+            // 
+            progHappiness.Location = new Point(100, 370);
+            progHappiness.Name = "progHappiness";
+            progHappiness.Size = new Size(350, 20);
+            progHappiness.TabIndex = 8;
+            // 
+            // lblEnergy
+            // 
+            lblEnergy.Location = new Point(20, 370);
+            lblEnergy.Name = "lblEnergy";
+            lblEnergy.Size = new Size(100, 23);
+            lblEnergy.TabIndex = 9;
+            lblEnergy.Text = "Energy:";
+            // 
+            // progEnergy
+            // 
+            progEnergy.Location = new Point(100, 370);
+            progEnergy.Name = "progEnergy";
+            progEnergy.Size = new Size(350, 20);
+            progEnergy.TabIndex = 10;
+            // 
+            // lblHealth
+            // 
+            lblHealth.Location = new Point(20, 370);
+            lblHealth.Name = "lblHealth";
+            lblHealth.Size = new Size(100, 23);
+            lblHealth.TabIndex = 11;
+            lblHealth.Text = "Health:";
+            // 
+            // progHealth
+            // 
+            progHealth.Location = new Point(100, 370);
+            progHealth.Name = "progHealth";
+            progHealth.Size = new Size(350, 20);
+            progHealth.TabIndex = 12;
+            // 
+            // btnFeed
+            // 
+            btnFeed.Location = new Point(20, 370);
+            btnFeed.Name = "btnFeed";
+            btnFeed.Size = new Size(70, 40);
+            btnFeed.TabIndex = 13;
+            btnFeed.Text = "Feed";
+            btnFeed.Click += btnFeed_Click;
+            // 
+            // btnClean
+            // 
+            btnClean.Location = new Point(20, 370);
+            btnClean.Name = "btnClean";
+            btnClean.Size = new Size(70, 40);
+            btnClean.TabIndex = 14;
+            btnClean.Text = "Clean";
+            btnClean.Click += btnClean_Click;
+            // 
+            // btnPlay
+            // 
+            btnPlay.Location = new Point(20, 370);
+            btnPlay.Name = "btnPlay";
+            btnPlay.Size = new Size(70, 40);
+            btnPlay.TabIndex = 15;
+            btnPlay.Text = "Play";
+            btnPlay.Click += btnPlay_Click;
+            // 
+            // btnHeal
+            // 
+            btnHeal.Location = new Point(20, 370);
+            btnHeal.Name = "btnHeal";
+            btnHeal.Size = new Size(70, 40);
+            btnHeal.TabIndex = 17;
+            btnHeal.Text = "Heal";
+            btnHeal.Click += btnHeal_Click;
+            // 
+            // btnSleep
+            // 
+            btnSleep.Location = new Point(20, 370);
+            btnSleep.Name = "btnSleep";
+            btnSleep.Size = new Size(70, 40);
+            btnSleep.TabIndex = 16;
+            btnSleep.Text = "Sleep";
+            btnSleep.Click += btnSleep_Click;
+            // 
+            // btnReset
+            // 
+            btnReset.Location = new Point(400, 370);
+            btnReset.Name = "btnReset";
+            btnReset.Size = new Size(70, 40);
+            btnReset.TabIndex = 18;
+            btnReset.Text = "Reset";
+            btnReset.Click += btnReset_Click;
+            // 
+            // lblStatus
+            // 
+            lblStatus.AutoSize = true;
+            lblStatus.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblStatus.Location = new Point(200, 15);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Size = new Size(87, 21);
+            lblStatus.TabIndex = 2;
+            lblStatus.Text = "Status: OK";
+            // 
+            // cmbPetType
+            // 
+            cmbPetType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbPetType.Location = new Point(60, 12);
+            cmbPetType.Name = "cmbPetType";
+            cmbPetType.Size = new Size(100, 23);
+            cmbPetType.TabIndex = 1;
+            cmbPetType.SelectedIndexChanged += cmbPetType_SelectedIndexChanged;
+            // 
+            // lblType
+            // 
+            lblType.AutoSize = true;
+            lblType.Location = new Point(12, 15);
+            lblType.Name = "lblType";
+            lblType.Size = new Size(35, 15);
+            lblType.TabIndex = 0;
+            lblType.Text = "Type:";
+            // 
+            // MainForm
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(500, 600);
+            Controls.Add(lblType);
+            Controls.Add(cmbPetType);
+            Controls.Add(lblStatus);
+            Controls.Add(pbPet);
+            Controls.Add(lblHunger);
+            Controls.Add(progHunger);
+            Controls.Add(lblHygiene);
+            Controls.Add(progHygiene);
+            Controls.Add(lblHappiness);
+            Controls.Add(progHappiness);
+            Controls.Add(lblEnergy);
+            Controls.Add(progEnergy);
+            Controls.Add(lblHealth);
+            Controls.Add(progHealth);
+            Controls.Add(btnFeed);
+            Controls.Add(btnClean);
+            Controls.Add(btnPlay);
+            Controls.Add(btnSleep);
+            Controls.Add(btnHeal);
+            Controls.Add(btnReset);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            Name = "MainForm";
+            Text = "Tamagochi - By Jacky";
+            ((System.ComponentModel.ISupportInitialize)pbPet).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -214,7 +269,7 @@ namespace Tamagochi
         private System.Windows.Forms.Label lblHealth;
         private System.Windows.Forms.ProgressBar progHealth;
         
-        private System.Windows.Forms.Button btnFeed;
+        
         private System.Windows.Forms.Button btnClean;
         private System.Windows.Forms.Button btnPlay;
         private System.Windows.Forms.Button btnHeal;
