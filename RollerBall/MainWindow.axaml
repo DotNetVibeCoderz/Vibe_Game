@@ -1,0 +1,112 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        x:Class="RollerBall.MainWindow"
+        Title="RollerBall - Zuma Clone"
+        Width="800" Height="600"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <!-- Background -->
+        <Image Name="BackgroundImg" Stretch="UniformToFill" />
+        
+        <!-- Track Layer -->
+        <Canvas Name="TrackCanvas" Background="Transparent" />
+
+        <!-- Game Layer -->
+        <Canvas Name="GameCanvas" Background="Transparent" />
+
+        <!-- UI Layer -->
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
+            <TextBlock Name="ScoreText" Text="Score: 0" FontSize="24" FontWeight="Bold" Foreground="White">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="5" />
+                </TextBlock.Effect>
+            </TextBlock>
+            <TextBlock Name="LevelText" Text="Level: 1" FontSize="18" Foreground="#EEE">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="3" />
+                </TextBlock.Effect>
+            </TextBlock>
+        </StackPanel>
+
+        <!-- Menu Layer -->
+        <Grid Name="MenuOverlay" Background="#AA000000" IsVisible="True">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+                <TextBlock Text="ROLLER BALL" FontSize="48" FontWeight="Bold" Foreground="#FFD700" HorizontalAlignment="Center">
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="Black" BlurRadius="10" />
+                    </TextBlock.Effect>
+                </TextBlock>
+                
+                <Button Name="BtnNewGame" Content="New Game" 
+                        HorizontalAlignment="Center" Width="200" Height="50" 
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        FontSize="20" Background="#444" Foreground="White" Click="OnNewGameClick"/>
+
+                <Button Name="BtnOptions" Content="Options" 
+                        HorizontalAlignment="Center" Width="200" Height="50" 
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        FontSize="20" Background="#444" Foreground="White" Click="OnOptionsClick"/>
+
+                <Button Name="BtnAbout" Content="About" 
+                        HorizontalAlignment="Center" Width="200" Height="50" 
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        FontSize="20" Background="#444" Foreground="White" Click="OnAboutClick"/>
+                        
+                <Button Name="BtnExit" Content="Exit" 
+                        HorizontalAlignment="Center" Width="200" Height="50" 
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        FontSize="20" Background="#444" Foreground="White" Click="OnExitClick"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Options Overlay -->
+        <Grid Name="OptionsOverlay" Background="#AA000000" IsVisible="False">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+                <TextBlock Text="OPTIONS" FontSize="48" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                
+                <CheckBox Name="ChkSound" Content="Sound Effects" IsChecked="True" 
+                          FontSize="24" Foreground="White" HorizontalAlignment="Center"
+                          Checked="OnSoundChecked" Unchecked="OnSoundUnchecked"/>
+                          
+                <Button Content="Back" Click="OnOptionsBackClick" 
+                        HorizontalAlignment="Center" Width="200" Height="50"
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        Background="#444" Foreground="White"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- About Overlay -->
+        <Grid Name="AboutOverlay" Background="#AA000000" IsVisible="False">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+                <TextBlock Text="ABOUT" FontSize="48" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                
+                <TextBlock Text="RollerBall - A Zuma Clone" FontSize="24" Foreground="White" HorizontalAlignment="Center"/>
+                <TextBlock Text="Created with Avalonia UI" FontSize="18" Foreground="#DDD" HorizontalAlignment="Center"/>
+                <TextBlock Text="(c) 2024" FontSize="18" Foreground="#DDD" HorizontalAlignment="Center"/>
+                
+                <Button Content="Back" Click="OnAboutBackClick" 
+                        HorizontalAlignment="Center" Width="200" Height="50"
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        Background="#444" Foreground="White"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Game Over / Pause Overlay -->
+        <Grid Name="GameOverOverlay" Background="#AA000000" IsVisible="False">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+                <TextBlock Name="GameOverText" Text="GAME OVER" FontSize="48" FontWeight="Bold" Foreground="Red" HorizontalAlignment="Center"/>
+                <TextBlock Name="FinalScoreText" Text="Final Score: 0" FontSize="24" Foreground="White" HorizontalAlignment="Center"/>
+                <Button Content="Return to Menu" Click="OnMenuClick" 
+                        HorizontalAlignment="Center" Width="200" Height="50"
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        Background="#444" Foreground="White"/>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</Window>
