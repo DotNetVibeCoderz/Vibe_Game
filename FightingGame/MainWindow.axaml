@@ -1,0 +1,98 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="FightingGame.MainWindow"
+        Title="Fighting Game - Jacky Edition"
+        Width="800" Height="600"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <!-- Background Layer -->
+        <Image Name="BackgroundImage" Stretch="UniformToFill" />
+
+        <!-- Game World Layer -->
+        <Canvas Name="GameCanvas">
+            <!-- Player -->
+            <Image Name="PlayerSprite" Width="64" Height="128" />
+            
+            <!-- Enemy -->
+            <Image Name="EnemySprite" Width="64" Height="128" />
+            
+            <!-- Projectiles/Effects (Dynamic) -->
+        </Canvas>
+
+        <!-- UI HUD Layer -->
+        <StackPanel VerticalAlignment="Top" Margin="20">
+            <Grid ColumnDefinitions="*, Auto, *">
+                <!-- Player Health -->
+                <ProgressBar Name="PlayerHealthBar" Grid.Column="0" Height="20" Value="100" Maximum="100" Background="Red" Foreground="Green" />
+                
+                <!-- Timer -->
+                <Border Grid.Column="1" Background="Black" CornerRadius="5" Padding="10,5" Margin="20,0">
+                    <TextBlock Name="TimerText" Text="99" Foreground="Yellow" FontSize="24" FontWeight="Bold" />
+                </Border>
+                
+                <!-- Enemy Health -->
+                <ProgressBar Name="EnemyHealthBar" Grid.Column="2" Height="20" Value="100" Maximum="100" Background="Red" Foreground="Green" FlowDirection="RightToLeft" />
+            </Grid>
+            
+            <TextBlock Name="DebugText" Foreground="White" HorizontalAlignment="Center" Margin="0,10" />
+        </StackPanel>
+
+        <!-- Main Menu Overlay -->
+        <Grid Name="MenuOverlay" Background="#DD000000" IsVisible="True">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+                <TextBlock Text="FIGHTING GAME" Foreground="Cyan" FontSize="48" FontWeight="Bold" HorizontalAlignment="Center" />
+                <Button Name="StartButton" Content="START GAME" Width="200" HorizontalContentAlignment="Center" Background="Green" Foreground="White" FontSize="20" />
+                <Button Name="OptionsButton" Content="OPTIONS" Width="200" HorizontalContentAlignment="Center" Background="Gray" Foreground="White" FontSize="20" />
+                <Button Name="AboutButton" Content="ABOUT" Width="200" HorizontalContentAlignment="Center" Background="Gray" Foreground="White" FontSize="20" />
+                <Button Name="ExitButton" Content="EXIT" Width="200" HorizontalContentAlignment="Center" Background="Red" Foreground="White" FontSize="20" />
+                <TextBlock Text="Controls: Arrows to Move, Z=Punch, X=Kick, C=Block" Foreground="Gray" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+        
+        <!-- Options Overlay -->
+        <Grid Name="OptionsOverlay" Background="#DD000000" IsVisible="False">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20" Width="300">
+                <TextBlock Text="OPTIONS" Foreground="Cyan" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" />
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                    <TextBlock Text="Difficulty:" Foreground="White" VerticalAlignment="Center"/>
+                    <ComboBox Name="DifficultyCombo" Width="150" SelectedIndex="1">
+                        <ComboBoxItem>Easy</ComboBoxItem>
+                        <ComboBoxItem>Normal</ComboBoxItem>
+                        <ComboBoxItem>Hard</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+                
+                <CheckBox Name="SoundCheck" Content="Enable Sound" IsChecked="True" Foreground="White" HorizontalAlignment="Center"/>
+                
+                <Button Name="OptionsBackButton" Content="BACK" Width="200" HorizontalContentAlignment="Center" Background="Gray" Foreground="White" FontSize="20" />
+            </StackPanel>
+        </Grid>
+
+        <!-- About Overlay -->
+        <Grid Name="AboutOverlay" Background="#DD000000" IsVisible="False">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20" Width="400">
+                <TextBlock Text="ABOUT" Foreground="Cyan" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" />
+                <TextBlock Text="Fighting Game - Jacky Edition" Foreground="White" HorizontalAlignment="Center" FontSize="18"/>
+                <TextBlock Text="Created by: Jacky the Code Bender" Foreground="Yellow" HorizontalAlignment="Center" />
+                <TextBlock Text="Studios: Gravicode Studios" Foreground="Yellow" HorizontalAlignment="Center" />
+                <TextBlock Text="Version: 1.2.0" Foreground="Gray" HorizontalAlignment="Center" />
+                <TextBlock Text="Description: A classic fighting game with dynamic procedural animation and AI difficulty scaling." Foreground="White" TextWrapping="Wrap" TextAlignment="Center"/>
+                
+                <Button Name="AboutBackButton" Content="BACK" Width="200" HorizontalContentAlignment="Center" Background="Gray" Foreground="White" FontSize="20" />
+            </StackPanel>
+        </Grid>
+        
+        <!-- Game Over Overlay -->
+        <Grid Name="GameOverOverlay" Background="#CC000000" IsVisible="False">
+             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+                <TextBlock Name="WinnerText" Text="YOU WIN!" Foreground="Gold" FontSize="48" FontWeight="Bold" HorizontalAlignment="Center" />
+                <Button Name="RestartButton" Content="PLAY AGAIN" Width="200" HorizontalContentAlignment="Center" Background="Blue" Foreground="White" FontSize="20" />
+                <Button Name="MenuButton" Content="MAIN MENU" Width="200" HorizontalContentAlignment="Center" Background="Gray" Foreground="White" FontSize="20" />
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</Window>
