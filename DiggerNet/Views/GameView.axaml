@@ -1,0 +1,10 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DiggerNet.ViewModels"
+             xmlns:local="using:DiggerNet.Views"
+             x:Class="DiggerNet.Views.GameView"
+             x:DataType="vm:GameViewModel">
+    <Grid>
+        <local:GameControl Name="GameCanvas"/>
+    </Grid>
+</UserControl>

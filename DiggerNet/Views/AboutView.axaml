@@ -1,0 +1,14 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DiggerNet.ViewModels"
+             x:Class="DiggerNet.Views.AboutView"
+             x:DataType="vm:AboutViewModel">
+    <Grid Background="Black">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+            <TextBlock Text="{Binding Title}" FontSize="40" Foreground="Gold" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding Version, StringFormat='Version: {0}'}" Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding Author, StringFormat='By: {0}'}" Foreground="White" HorizontalAlignment="Center"/>
+            <Button Content="Back" Command="{Binding BackCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

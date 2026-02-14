@@ -1,0 +1,13 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DiggerNet.ViewModels"
+             x:Class="DiggerNet.Views.OptionsView"
+             x:DataType="vm:OptionsViewModel">
+    <Grid Background="Black">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+            <TextBlock Text="OPTIONS" FontSize="40" Foreground="Gold" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <CheckBox IsChecked="{Binding IsSoundEnabled}" Content="Enable Sound" Foreground="White"/>
+            <Button Content="Back" Command="{Binding BackCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

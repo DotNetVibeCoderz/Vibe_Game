@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DiggerNet.ViewModels"
+             x:Class="DiggerNet.Views.MenuView"
+             x:DataType="vm:MenuViewModel">
+    <Grid Background="Black">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+            <TextBlock Text="DIGGER.NET" FontSize="60" Foreground="Gold" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <Button Content="New Game" Command="{Binding StartGameCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button Content="Options" Command="{Binding OptionsCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button Content="About" Command="{Binding AboutCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button Content="Exit" Command="{Binding ExitCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
