@@ -1,0 +1,87 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SudokuNet.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="SudokuNet.Views.GameView"
+             x:DataType="vm:GameViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="Button.cell">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+        </Style>
+        <Style Selector="Button.cell:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E0E0E0"/>
+        </Style>
+        <Style Selector="Button.cell.selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="#BBDEFB"/>
+        </Style>
+        <Style Selector="Button.cell.fixed">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        <Style Selector="Button.cell.fixed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#F0F0F0"/>
+        </Style>
+        <Style Selector="Button.cell.error">
+            <Setter Property="Foreground" Value="Red"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, *">
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="20" Spacing="20">
+            <Button Content="Back" Command="{Binding BackCommand}"/>
+            <Button Content="Solve" Command="{Binding SolveCommand}" Background="LightGreen"/>
+            <TextBlock Text="{Binding TimerText}" FontSize="24" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Mistakes, StringFormat='Mistakes: {0}'}" FontSize="24" VerticalAlignment="Center" Foreground="Red"/>
+            <TextBlock Text="You Won!" IsVisible="{Binding IsGameWon}" FontSize="24" FontWeight="Bold" Foreground="Green"/>
+        </StackPanel>
+
+        <Viewbox Grid.Row="1" Grid.Column="0" Stretch="Uniform" Margin="20">
+            <Border BorderBrush="Black" BorderThickness="2">
+                <ItemsControl ItemsSource="{Binding Cells}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="9" Columns="9"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Classes="cell" 
+                                    Command="{Binding $parent[UserControl].DataContext.SelectCellCommand}"
+                                    CommandParameter="{Binding}"
+                                    Classes.fixed="{Binding IsFixed}"
+                                    Classes.selected="{Binding IsSelected}"
+                                    Classes.error="{Binding IsError}">
+                                <TextBlock Text="{Binding Text}"/>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+        </Viewbox>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Spacing="5" Margin="20" VerticalAlignment="Center">
+             <Button Content="1" Command="{Binding InputCommand}" CommandParameter="1" Width="50" Height="50" HorizontalContentAlignment="Center"/>
+             <Button Content="2" Command="{Binding InputCommand}" CommandParameter="2" Width="50" Height="50" HorizontalContentAlignment="Center"/>
+             <Button Content="3" Command="{Binding InputCommand}" CommandParameter="3" Width="50" Height="50" HorizontalContentAlignment="Center"/>
+             <Button Content="4" Command="{Binding InputCommand}" CommandParameter="4" Width="50" Height="50" HorizontalContentAlignment="Center"/>
+             <Button Content="5" Command="{Binding InputCommand}" CommandParameter="5" Width="50" Height="50" HorizontalContentAlignment="Center"/>
+             <Button Content="6" Command="{Binding InputCommand}" CommandParameter="6" Width="50" Height="50" HorizontalContentAlignment="Center"/>
+             <Button Content="7" Command="{Binding InputCommand}" CommandParameter="7" Width="50" Height="50" HorizontalContentAlignment="Center"/>
+             <Button Content="8" Command="{Binding InputCommand}" CommandParameter="8" Width="50" Height="50" HorizontalContentAlignment="Center"/>
+             <Button Content="9" Command="{Binding InputCommand}" CommandParameter="9" Width="50" Height="50" HorizontalContentAlignment="Center"/>
+             <Button Content="C" Command="{Binding InputCommand}" CommandParameter="C" Width="50" Height="50" HorizontalContentAlignment="Center" Background="Orange"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

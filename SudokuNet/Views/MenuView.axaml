@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SudokuNet.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
+             x:Class="SudokuNet.Views.MenuView"
+             x:DataType="vm:MenuViewModel">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20" Width="200">
+        <TextBlock Text="SudokuNet" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#4CAF50"/>
+        <TextBlock Text="Select Difficulty" FontSize="18" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+        
+        <Button Content="Easy" Command="{Binding StartGameCommand}" CommandParameter="Easy" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Classes="accent"/>
+        <Button Content="Medium" Command="{Binding StartGameCommand}" CommandParameter="Medium" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        <Button Content="Hard" Command="{Binding StartGameCommand}" CommandParameter="Hard" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        <Button Content="Expert" Command="{Binding StartGameCommand}" CommandParameter="Expert" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        <Button Content="Extreme" Command="{Binding StartGameCommand}" CommandParameter="Extreme" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+</UserControl>
