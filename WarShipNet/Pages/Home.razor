@@ -1,0 +1,96 @@
+@page "/"
+@inject IJSRuntime JSRuntime
+
+<PageTitle>WarShipNet - Space Shooter</PageTitle>
+
+<div id="game-wrapper">
+    <!-- UI Overlay for Game -->
+    @if (gameState == GameState.Playing)
+    {
+        <div class="score-display">Score: <span id="score-val">0</span></div>
+        <div class="health-display">Health: <span id="health-val">100</span>%</div>
+    }
+
+    <!-- Game Container for Phaser -->
+    <div id="game-container"></div>
+
+    <!-- Menus Overlay -->
+    @if (gameState == GameState.Menu)
+    {
+        <div class="game-ui">
+            <h1>WarShipNet</h1>
+            <p>1945 Style Space Shooter</p>
+            <div style="margin-bottom: 20px;">
+                <label>Difficulty:</label>
+                <select @bind="selectedDifficulty" class="form-control" style="display:inline-block; width:auto;">
+                    <option value="beginner">Beginner</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            <button @onclick="StartGame">New Game</button>
+            <button @onclick="ShowAbout">About</button>
+        </div>
+    }
+    else if (gameState == GameState.GameOver)
+    {
+        <div class="game-ui">
+            <h1>GAME OVER</h1>
+            <p>Final Score: @finalScore</p>
+            <button @onclick="ReturnToMenu">Main Menu</button>
+        </div>
+    }
+    else if (gameState == GameState.About)
+    {
+        <div class="game-ui">
+            <h1>About</h1>
+            <p>WarShipNet is a 1945-inspired space shooter built with Blazor WebAssembly and Phaser 3.</p>
+            <p>Created by Jacky the Code Bender.</p>
+            <p>Controls: Arrow Keys to Move, Space to Shoot.</p>
+            <button @onclick="ReturnToMenu">Back</button>
+        </div>
+    }
+</div>
+
+@code {
+    private enum GameState { Menu, Playing, GameOver, About }
+    private static GameState gameState = GameState.Menu;
+    private string selectedDifficulty = "medium";
+    private static int finalScore = 0;
+    private static Home? _instance;
+
+    protected override void OnInitialized()
+    {
+        _instance = this;
+    }
+
+    private async Task StartGame()
+    {
+        gameState = GameState.Playing;
+        StateHasChanged();
+        await Task.Delay(50); // Small delay to ensure DOM is ready for JS
+        await JSRuntime.InvokeVoidAsync("startGame", selectedDifficulty);
+    }
+
+    private void ShowAbout()
+    {
+        gameState = GameState.About;
+    }
+
+    private void ReturnToMenu()
+    {
+        gameState = GameState.Menu;
+        // Ideally we should cleanup JS here too, but start game handles cleanup
+    }
+
+    [JSInvokable]
+    public static void GameOver(int score)
+    {
+        if (_instance != null)
+        {
+            finalScore = score;
+            gameState = GameState.GameOver;
+            _instance.StateHasChanged();
+        }
+    }
+}

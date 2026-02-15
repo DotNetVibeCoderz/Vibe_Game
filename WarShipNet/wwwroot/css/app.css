@@ -1,0 +1,90 @@
+body {
+    background-color: #1a1a1a;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+canvas {
+    border: 2px solid #444;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+
+.game-ui {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.85);
+    padding: 2rem;
+    border-radius: 10px;
+    border: 1px solid #444;
+    text-align: center;
+    min-width: 300px;
+    z-index: 1000;
+}
+
+.hidden {
+    display: none;
+}
+
+button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    width: 100%;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+button.exit {
+    background: #dc3545;
+}
+
+button.exit:hover {
+    background: #a71d2a;
+}
+
+h1 {
+    color: #ffc107;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.score-display {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+    color: white;
+    text-shadow: 2px 2px 0 #000;
+    z-index: 999;
+}
+
+.health-display {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: #ff4444;
+    text-shadow: 2px 2px 0 #000;
+    z-index: 999;
+}
