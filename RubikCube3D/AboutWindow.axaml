@@ -1,0 +1,89 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+        x:Class="RubikCube3D.AboutWindow"
+        Title="About RubikCube3D"
+        Width="400" Height="400"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        SystemDecorations="Full"
+        Background="Transparent">
+
+    <Window.Styles>
+        <Style Selector="TextBlock">
+            <Setter Property="FontFamily" Value="Inter, Segoe UI, sans-serif"/>
+        </Style>
+        <Style Selector="TextBlock.title">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+        <Style Selector="TextBlock.subtitle">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#E0E0E0"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+        </Style>
+        <Style Selector="TextBlock.content">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#CCCCCC"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="20,2,20,2"/>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="#3498DB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Margin" Value="0,20,0,0"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style Selector="Button:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2980B9"/>
+        </Style>
+    </Window.Styles>
+    
+    <Border CornerRadius="10">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#2C3E50" Offset="0.0"/>
+                <GradientStop Color="#4CA1AF" Offset="1.0"/>
+            </LinearGradientBrush>
+        </Border.Background>
+        
+        <StackPanel VerticalAlignment="Center" Spacing="5">
+            <!-- Simple Rubik's Cube Icon using Path -->
+            <Canvas Width="64" Height="64" HorizontalAlignment="Center" Margin="0,0,0,10">
+                 <!-- Front Face -->
+                 <Path Data="M10,20 L32,30 L32,54 L10,44 Z" Fill="#C0392B" Stroke="White" StrokeThickness="1"/>
+                 <!-- Top Face -->
+                 <Path Data="M10,20 L32,10 L54,20 L32,30 Z" Fill="#F1C40F" Stroke="White" StrokeThickness="1"/>
+                 <!-- Right Face -->
+                 <Path Data="M32,30 L54,20 L54,44 L32,54 Z" Fill="#2980B9" Stroke="White" StrokeThickness="1"/>
+                 
+                 <!-- Inner lines for 2x2 look -->
+                 <Path Data="M21,15 L43,25 M32,30 L32,54 M32,30 L10,20" Stroke="Black" StrokeThickness="0.5" Opacity="0.5"/> 
+            </Canvas>
+            
+            <TextBlock Classes="title" Text="RubikCube3D"/>
+            <TextBlock Classes="subtitle" Text="Version 1.0.0"/>
+            
+            <TextBlock Classes="content" Text="A 3D Rubik's Cube simulator built with AvaloniaUI and SkiaSharp."/>
+            <TextBlock Classes="content" Margin="0,10,0,0" Text="Developed by Jacky the Code Bender"/>
+            <TextBlock Classes="content" Text="Gravicode Studios"/>
+            
+            <TextBlock Classes="content" Foreground="#A9D0F5" TextDecorations="Underline" Cursor="Hand" PointerPressed="OnLinkClick" Margin="0,10,0,0">
+                studios.gravicode.com/products/budax
+            </TextBlock>
+
+            <Button Content="OK" Click="OnCloseClick"/>
+        </StackPanel>
+    </Border>
+</Window>

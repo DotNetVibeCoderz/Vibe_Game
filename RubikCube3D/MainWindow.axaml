@@ -1,0 +1,55 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        x:Class="RubikCube3D.MainWindow"
+        Title="RubikCube3D - Jacky's Simulator"
+        KeyDown="OnKeyDown"
+        Icon="">
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New Game" Click="OnNewGame" />
+                <Separator/>
+                <MenuItem Header="_Exit" Click="OnExit" />
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo" Click="OnUndo" InputGesture="Ctrl+Z"/>
+                <MenuItem Header="_Redo" Click="OnRedo" InputGesture="Ctrl+Y"/>
+                <Separator/>
+                <MenuItem Header="_Scramble" Click="OnScramble" InputGesture="F5"/>
+                <MenuItem Header="Sol_ve" Click="OnSolve" />
+            </MenuItem>
+            <MenuItem Header="_Dimensions">
+                <MenuItem Header="2x2" Click="OnDim2" />
+                <MenuItem Header="3x3" Click="OnDim3" />
+                <MenuItem Header="4x4" Click="OnDim4" />
+            </MenuItem>
+             <MenuItem Header="_Help">
+                <MenuItem Header="_About" Click="OnAbout" />
+            </MenuItem>
+        </Menu>
+        
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Background="LightGray">
+            <TextBlock Name="StatusText" Text="Ready" Margin="5"/>
+        </StackPanel>
+
+        <Grid>
+             <!-- Image control to display the Skia render -->
+            <Image Name="RenderImage" Stretch="Uniform" 
+                   PointerPressed="OnPointerPressed"
+                   PointerMoved="OnPointerMoved"
+                   PointerReleased="OnPointerReleased"
+                   PointerWheelChanged="OnPointerWheelChanged"/>
+            
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Background="#80000000">
+                <TextBlock Text="Controls:" Foreground="White" Margin="5"/>
+                <TextBlock Text="Left Click + Drag: Rotate View" Foreground="White" Margin="5"/>
+                <TextBlock Text="Keys (F, B, U, D, L, R): Rotate Faces" Foreground="White" Margin="5"/>
+                <TextBlock Text="Shift + Key: Counter Clockwise" Foreground="White" Margin="5"/>
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>
