@@ -1,0 +1,91 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CrossWordsNet.ViewModels"
+             xmlns:models="using:CrossWordsNet.Models"
+             x:Class="CrossWordsNet.Views.GameView"
+             Focusable="True">
+    
+    <Grid ColumnDefinitions="3*, 1*" Margin="20">
+        <!-- Main Grid Area -->
+        <Grid Grid.Column="0" RowDefinitions="*, Auto" Margin="0,0,20,0">
+            <Border Grid.Row="0" BorderBrush="#555" BorderThickness="2">
+                <ItemsControl ItemsSource="{Binding GridCells}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="15" Columns="15"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="models:CrosswordCell">
+                            <Border BorderBrush="#333" BorderThickness="1">
+                                 <Panel>
+                                    <Rectangle Fill="Black" IsVisible="{Binding IsBlock}"/>
+                                    <Rectangle Fill="#FFEB3B" Opacity="0.5" IsVisible="{Binding IsHighlighted}"/>
+                                    <Rectangle Fill="White" IsVisible="{Binding IsCell}" ZIndex="-1"/>
+                                    
+                                    <TextBlock Text="{Binding Number}" FontSize="10" Margin="2" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="Black" IsVisible="{Binding IsCell}"/>
+                                    <TextBlock Text="{Binding UserInput}" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" IsVisible="{Binding IsCell}"/>
+                                </Panel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+
+            <!-- Keyboard -->
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding AvailableLetters}" Margin="0,15,0,0">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding}" 
+                                Command="{Binding $parent[UserControl].DataContext.InputLetterCommand}"
+                                CommandParameter="{Binding}"
+                                Width="40" Height="40" Margin="4"
+                                HorizontalContentAlignment="Center" 
+                                VerticalContentAlignment="Center"
+                                FontWeight="Bold" FontSize="18"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+
+        <!-- Sidebar -->
+        <Grid Grid.Column="1" RowDefinitions="Auto, *, Auto">
+            <StackPanel Spacing="10">
+                <TextBlock Text="CrossWordsNet" FontSize="24" FontWeight="Bold" Foreground="#DDD"/>
+                <TextBlock Text="{Binding TimerString, StringFormat='Time: {0}'}" FontSize="18" Foreground="#AAA"/>
+                <TextBlock Text="{Binding Score, StringFormat='Score: {0}'}" FontSize="18" Foreground="#AAA"/>
+                
+                <Button Content="Check" Command="{Binding CheckCommand}" HorizontalAlignment="Stretch"/>
+                <Button Content="Hint" Command="{Binding HintCommand}" HorizontalAlignment="Stretch"/>
+                <Button Content="Back" Command="{Binding BackCommand}" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+
+            <ScrollViewer Grid.Row="1" Margin="0,20">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="ACROSS" FontWeight="Bold" FontSize="16" Foreground="#4CAF50"/>
+                    <ItemsControl ItemsSource="{Binding AcrossClues}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Clue, StringFormat='{}{0}. {1}'}" TextWrapping="Wrap" Margin="0,5"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="DOWN" FontWeight="Bold" FontSize="16" Foreground="#4CAF50" Margin="0,20,0,0"/>
+                    <ItemsControl ItemsSource="{Binding DownClues}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Clue, StringFormat='{}{0}. {1}'}" TextWrapping="Wrap" Margin="0,5"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

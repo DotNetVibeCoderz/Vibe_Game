@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <rect width="200" height="200" rx="40" ry="40" fill="#1e1e1e"/>
+  <rect x="25" y="25" width="50" height="50" fill="#ffffff" stroke="#4CAF50" stroke-width="5"/>
+  <text x="50" y="65" font-family="Arial" font-size="40" font-weight="bold" fill="#333" text-anchor="middle">C</text>
+  <rect x="75" y="25" width="50" height="50" fill="#ffffff" stroke="#4CAF50" stroke-width="5"/>
+  <text x="100" y="65" font-family="Arial" font-size="40" font-weight="bold" fill="#333" text-anchor="middle">R</text>
+  <rect x="125" y="25" width="50" height="50" fill="#ffffff" stroke="#4CAF50" stroke-width="5"/>
+  <text x="150" y="65" font-family="Arial" font-size="40" font-weight="bold" fill="#333" text-anchor="middle">O</text>
+  <rect x="25" y="75" width="50" height="50" fill="#ffffff" stroke="#4CAF50" stroke-width="5"/>
+  <text x="50" y="115" font-family="Arial" font-size="40" font-weight="bold" fill="#333" text-anchor="middle">S</text>
+  <rect x="25" y="125" width="50" height="50" fill="#ffffff" stroke="#4CAF50" stroke-width="5"/>
+  <text x="50" y="165" font-family="Arial" font-size="40" font-weight="bold" fill="#333" text-anchor="middle">S</text>
+</svg>

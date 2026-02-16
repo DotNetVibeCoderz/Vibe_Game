@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CrossWordsNet.ViewModels"
+             x:Class="CrossWordsNet.Views.AboutView">
+    <Grid>
+        <Image x:Name="BackgroundImg" Stretch="UniformToFill" Opacity="0.5"/>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20" MaxWidth="600">
+            <TextBlock Text="About" FontSize="40" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#E0E0E0"/>
+            
+            <TextBlock Text="{Binding AppVersion}" HorizontalAlignment="Center" Foreground="White" FontSize="18"/>
+            <TextBlock Text="{Binding Developer}" HorizontalAlignment="Center" Foreground="White" FontSize="18"/>
+            <TextBlock Text="{Binding Description}" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="16"/>
+
+            <Button Content="Back" Command="{Binding BackCommand}" Width="200" HorizontalContentAlignment="Center" FontSize="20" Background="#333" Foreground="White" Padding="10"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
