@@ -1,0 +1,16 @@
+@using Microsoft.JSInterop
+@inherits LayoutComponentBase
+
+<div style="width:100%;height:100%;">
+    @Body
+</div>
+
+@code {
+
+    // Method dipanggil dari JS
+    [JSInvokable]
+    public static void ExitApp()
+    {
+        AppConstants.State?.Exit();
+    }
+}
