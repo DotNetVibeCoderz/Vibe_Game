@@ -1,0 +1,274 @@
+@page "/race"
+@inject IJSRuntime JS
+@inject GameDataService GameData
+@inject GameStateService GameState
+@inject RaceManager RaceManager
+@inject AiRacerService AiService
+@inject ItemManager ItemManager
+@inject AudioService AudioService
+@inject WeatherService WeatherService
+@inject ProgressionService Progression
+@inject NavigationManager Navigation
+
+<div class="game-container">
+    <canvas id="raceCanvas" class="game-canvas"></canvas>
+
+    <div class="ui-overlay">
+        <div class="hud">
+            <div class="hud-item">🏁 Lap: @CurrentLap/@TotalLaps</div>
+            <div class="hud-item">⏱️ @FormattedTime</div>
+            <div class="hud-item">🏆 Pos: @CurrentPosition</div>
+            <div class="hud-item">🪙 Coins: @Coins</div>
+        </div>
+
+        @if (CurrentItem != null)
+        {
+            <div style="position: absolute; bottom: 30px; right: 30px; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 15px; border: 3px solid #ffd700;">
+                <div style="font-size: 3rem; text-align: center;">@CurrentItem.Icon</div>
+                <div style="color: white; font-weight: bold;">@CurrentItem.Name</div>
+                <div style="color: #aaa; font-size: 0.8rem;">Press SPACE to use</div>
+            </div>
+        }
+
+        @if (RaceFinished)
+        {
+            <div class="main-menu">
+                <h1 class="game-title">FINISHED!</h1>
+                <p class="game-subtitle">You finished @CurrentPosition</p>
+                <button class="menu-button" @onclick="BackToMenu">🏠 Main Menu</button>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private int CurrentLap { get; set; } = 1;
+    private int TotalLaps { get; set; } = 3;
+    private string FormattedTime { get; set; } = "00:00.00";
+    private string CurrentPosition { get; set; } = "1st";
+    private int Coins { get; set; } = 0;
+    private PowerUp? CurrentItem { get; set; }
+    private bool RaceFinished { get; set; } = false;
+
+    private System.Timers.Timer? _gameTimer;
+    private DotNetObjectReference<Race>? _dotNetRef;
+    private bool _isUpdating;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("gameEngine.registerDotNet", _dotNetRef);
+
+            var track = GameState.CurrentSession.Track ?? GameData.GetTracks().First();
+            TotalLaps = GameState.CurrentSession.Laps;
+
+            try
+            {
+                await AudioService.SetVolumes();
+            }
+            catch (InvalidOperationException)
+            {
+                // Audio not available in WebView context yet, will use JS side audio
+            }
+
+            await JS.InvokeVoidAsync("gameEngine.init", "raceCanvas");
+            await JS.InvokeVoidAsync("gameEngine.setPlayerKart", HexToInt(GameState.CurrentSession.PlayerRacer?.ColorHex ?? "#e94560"));
+            await JS.InvokeVoidAsync("gameEngine.changeTrack", GetTrackKey(track.Name));
+
+            try
+            {
+                await AudioService.PlayBackgroundMusic(track.Theme);
+            }
+            catch (InvalidOperationException)
+            {
+                // Fallback: audio will be handled by JS engine start
+            }
+
+            // Apply volumes via JS directly as fallback
+            await JS.InvokeVoidAsync("gameEngine.setVolume", AudioService.MasterVolume, AudioService.MusicVolume, AudioService.SfxVolume);
+            await JS.InvokeVoidAsync("gameEngine.playMusic", GetTrackTheme(track.Theme));
+
+            WeatherService.SetRandomWeather();
+            await WeatherService.ApplyWeather(WeatherService.CurrentWeather);
+
+            await JS.InvokeVoidAsync("gameEngine.start");
+
+            RaceManager.InitializeTrack(track.RadiusX, track.RadiusZ);
+            RaceManager.RegisterRacer(1, GameState.CurrentSession.PlayerRacer?.Name ?? "Player", true);
+
+            AiService.Initialize(GameState.CurrentSession.Mode == GameMode.TimeTrial ? 0 : GameState.CurrentSession.AiCount,
+                track.RadiusX, track.RadiusZ);
+
+            foreach (var ai in AiService.AiKarts)
+            {
+                RaceManager.RegisterRacer(ai.Id, ai.Name, false);
+            }
+
+            var aiData = AiService.AiKarts.Select(ai => new { id = ai.Id, x = ai.PositionX, z = ai.PositionZ }).ToList();
+            await JS.InvokeVoidAsync("gameEngine.createAiKarts", aiData);
+
+            GameState.StartRace();
+
+            _gameTimer = new System.Timers.Timer(50);
+            _gameTimer.Elapsed += OnTimerElapsed;
+            _gameTimer.AutoReset = true;
+            _gameTimer.Start();
+        }
+    }
+
+    /// <summary>
+    /// Timer callback runs on a background thread.
+    /// Semua JS interop dan UI update harus dijalankan di UI thread via InvokeAsync.
+    /// </summary>
+    private void OnTimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
+    {
+        _ = InvokeAsync(async () =>
+        {
+            if (RaceFinished || _isUpdating) return;
+            _isUpdating = true;
+
+            try
+            {
+                GameState.UpdateElapsedTime();
+                FormattedTime = GameState.ElapsedTime.ToString(@"mm\:ss\.ff");
+
+                var pos = await JS.InvokeAsync<PlayerPosition>("gameEngine.getPlayerPosition");
+                RaceManager.UpdateRacerPosition(1, pos.x, pos.z);
+
+                AiService.Update(0.05f);
+                var aiUpdateData = AiService.AiKarts.Select(ai => new { id = ai.Id, x = ai.PositionX, y = ai.PositionY, z = ai.PositionZ, rotationY = ai.RotationY }).ToList();
+                await JS.InvokeVoidAsync("gameEngine.updateAiKarts", aiUpdateData);
+
+                foreach (var ai in AiService.AiKarts)
+                {
+                    RaceManager.UpdateRacerPosition(ai.Id, ai.PositionX, ai.PositionZ);
+                }
+
+                RaceManager.RecalculatePositions();
+
+                var playerPos = RaceManager.GetPlayerPosition();
+                if (playerPos != null)
+                {
+                    CurrentLap = Math.Min(playerPos.Lap, TotalLaps);
+                    CurrentPosition = RaceManager.GetOrdinalPosition(playerPos.FinishPosition);
+
+                    if (playerPos.HasFinished && !RaceFinished)
+                    {
+                        RaceFinished = true;
+                        var won = playerPos.FinishPosition == 1;
+                        Progression.RecordRace(won, (int)GameState.ElapsedTime.TotalMilliseconds);
+                        if (won) Coins += 10;
+                        Progression.AddCoins(Coins);
+
+                        CheckUnlocks();
+                    }
+                }
+
+                StateHasChanged();
+            }
+            finally
+            {
+                _isUpdating = false;
+            }
+        });
+    }
+
+    private void CheckUnlocks()
+    {
+        if (Progression.Profile.RacesWon >= 3)
+            Progression.UnlockCharacter("Bowser");
+        if (Progression.Profile.RacesWon >= 5)
+            Progression.UnlockKart("B Dasher");
+        if (Progression.Profile.RacesWon >= 8)
+            Progression.UnlockKart("Sneeker");
+        if (Progression.Profile.RacesWon >= 2)
+            Progression.UnlockTrack("Bowser's Castle");
+        if (Progression.Profile.RacesWon >= 4)
+            Progression.UnlockTrack("Ghost Valley");
+        if (Progression.Profile.RacesWon >= 5)
+            Progression.UnlockTrack("Rainbow Road");
+        if (Progression.Profile.RacesWon >= 6)
+            Progression.UnlockTrack("DK Mountain");
+    }
+
+    [JSInvokable]
+    public async Task OnItemBoxHit(float x, float z)
+    {
+        ItemManager.RollItemBox();
+        CurrentItem = ItemManager.CurrentItem;
+        if (CurrentItem != null)
+        {
+            await AudioService.PlayItemSound(CurrentItem.Name);
+        }
+        Coins++;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public void OnKeyDown(string key)
+    {
+        if (key == " " && CurrentItem != null)
+        {
+            ItemManager.UseItem();
+            CurrentItem = null;
+            StateHasChanged();
+        }
+    }
+
+    private async void BackToMenu()
+    {
+        _gameTimer?.Stop();
+        _gameTimer?.Dispose();
+        await AudioService.StopMusic();
+        Navigation.NavigateTo("/");
+    }
+
+    private int HexToInt(string hex)
+    {
+        if (hex.StartsWith("#")) hex = hex.Substring(1);
+        return int.Parse(hex, System.Globalization.NumberStyles.HexNumber);
+    }
+
+    private string GetTrackKey(string trackName)
+    {
+        return trackName switch
+        {
+            "Mushroom Circuit" => "mushroom",
+            "Bowser's Castle" => "castle",
+            "Rainbow Road" => "rainbow",
+            "Koopa Beach" => "beach",
+            "Ghost Valley" => "haunted",
+            "DK Mountain" => "mountain",
+            _ => "mushroom"
+        };
+    }
+
+    private string GetTrackTheme(string trackTheme)
+    {
+        return trackTheme.ToLowerInvariant() switch
+        {
+            "grassland" => "grassland",
+            "castle" => "castle",
+            "space" => "space",
+            "beach" => "beach",
+            "haunted" => "haunted",
+            "mountain" => "mountain",
+            _ => "grassland"
+        };
+    }
+
+    public class PlayerPosition
+    {
+        public float x { get; set; }
+        public float z { get; set; }
+    }
+
+    public void Dispose()
+    {
+        _gameTimer?.Stop();
+        _gameTimer?.Dispose();
+        _dotNetRef?.Dispose();
+    }
+}

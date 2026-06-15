@@ -1,0 +1,219 @@
+@page "/"
+@inject IJSRuntime JS
+@inject GameDataService GameData
+@inject GameStateService GameState
+@inject NavigationManager Navigation
+
+<div class="game-container">
+    <canvas id="gameCanvas" class="game-canvas"></canvas>
+
+    <div class="ui-overlay">
+        @if (ShowHud)
+        {
+            <div class="hud">
+                <div class="hud-item">🏁 Lap: @CurrentLap/@TotalLaps</div>
+                <div class="hud-item">⏱️ @FormattedTime</div>
+                <div class="hud-item">🏆 Pos: @CurrentPosition</div>
+                <div class="hud-item">🪙 Coins: @Coins</div>
+            </div>
+        }
+    </div>
+
+    @if (ShowMainMenu)
+    {
+        <div class="main-menu">
+            <h1 class="game-title">MARIO KART 3D</h1>
+            <p class="game-subtitle">Speed. Power. Fun.</p>
+            <div class="menu-grid">
+                <div class="card" @onclick="StartGrandPrix">
+                    <div class="card-title">🏆 Grand Prix</div>
+                    <div class="card-desc">Race through cups and become champion</div>
+                </div>
+                <div class="card" @onclick="StartTimeTrial">
+                    <div class="card-title">⏱️ Time Trial</div>
+                    <div class="card-desc">Beat the clock on your favorite track</div>
+                </div>
+                <div class="card" @onclick="StartVsRace">
+                    <div class="card-title">🆚 VS Race</div>
+                    <div class="card-desc">Custom race against AI or local friends</div>
+                </div>
+                <div class="card" @onclick="StartBattleMode">
+                    <div class="card-title">💥 Battle Mode</div>
+                    <div class="card-desc">Item battle in special arenas</div>
+                </div>
+            </div>
+            <div style="margin-top: 30px;">
+                <button class="menu-button" @onclick="OpenSettings">⚙️ Settings</button>
+                <button class="menu-button back-button" @onclick="OpenAbout">ℹ️ About</button>
+            </div>
+        </div>
+    }
+
+    @if (ShowSettings)
+    {
+        <div class="main-menu">
+            <h1 class="game-title">SETTINGS</h1>
+            <div class="settings-group">
+                <label>Master Volume</label>
+                <input type="range" min="0" max="100" @bind="MasterVolume" />
+                
+                <label>Music Volume</label>
+                <input type="range" min="0" max="100" @bind="MusicVolume" />
+                
+                <label>SFX Volume</label>
+                <input type="range" min="0" max="100" @bind="SfxVolume" />
+                
+                <label>Graphics Quality</label>
+                <select @bind="GraphicsQuality">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+                
+                <label>Screen Resolution</label>
+                <select @bind="Resolution">
+                    <option value="windowed">Windowed</option>
+                    <option value="fullscreen">Fullscreen</option>
+                </select>
+            </div>
+            <button class="menu-button" @onclick="SaveSettings">💾 Save Settings</button>
+            <button class="menu-button back-button" @onclick="BackToMenu">⬅️ Back</button>
+        </div>
+    }
+
+    @if (ShowAbout)
+    {
+        <div class="main-menu">
+            <h1 class="game-title">ABOUT</h1>
+            <div class="about-content">
+                <h2>Welcome to Mario Kart 3D!</h2>
+                <p>
+                    A fan-made tribute to the classic kart racing franchise, built with 
+                    <strong>WPF Blazor Hybrid</strong> and <strong>Three.js</strong>.
+                </p>
+                <p>
+                    Experience fast-paced racing, iconic characters, power-ups, dynamic tracks,
+                    weather effects, and stunning 3D visuals right on your desktop.
+                </p>
+                <p>
+                    Features multiple game modes, vehicle customization, AI opponents,
+                    unlockable content, and competitive rankings.
+                </p>
+                <p>
+                    Created with ❤️ by the team at <span class="team-name">Gravicode Studios</span>.
+                </p>
+                <p style="margin-top: 20px; font-size: 0.9rem; color: #aaa;">
+                    Version 1.0.0 | 2024
+                </p>
+            </div>
+            <button class="menu-button back-button" @onclick="BackToMenu">⬅️ Back to Menu</button>
+        </div>
+    }
+</div>
+
+@code {
+    private bool ShowMainMenu { get; set; } = true;
+    private bool ShowSettings { get; set; } = false;
+    private bool ShowAbout { get; set; } = false;
+    private bool ShowHud { get; set; } = false;
+
+    private int CurrentLap { get; set; } = 1;
+    private int TotalLaps { get; set; } = 3;
+    private string FormattedTime { get; set; } = "00:00.00";
+    private string CurrentPosition { get; set; } = "1st";
+    private int Coins { get; set; } = 0;
+
+    private int MasterVolume { get; set; } = 80;
+    private int MusicVolume { get; set; } = 70;
+    private int SfxVolume { get; set; } = 80;
+    private string GraphicsQuality { get; set; } = "high";
+    private string Resolution { get; set; } = "fullscreen";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        Console.WriteLine($"Index.razor OnAfterRenderAsync firstRender={firstRender}");
+        if (firstRender)
+        {
+            try
+            {
+                var hasThree = await JS.InvokeAsync<bool>("eval", "typeof THREE !== 'undefined'");
+                Console.WriteLine($"THREE loaded: {hasThree}");
+
+                if (!hasThree)
+                {
+                    Console.WriteLine("THREE.js not loaded, cannot initialize game engine");
+                    return;
+                }
+
+                var initialized = await JS.InvokeAsync<bool>("gameEngine.init", "gameCanvas");
+                Console.WriteLine($"Game engine init result: {initialized}");
+
+                if (initialized)
+                {
+                    await JS.InvokeVoidAsync("gameEngine.start");
+                    Console.WriteLine("Game engine started");
+                }
+                else
+                {
+                    Console.WriteLine("Failed to initialize game engine");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Game engine error: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
+        }
+    }
+
+    private void StartGrandPrix()
+    {
+        GameState.StartNewSession(GameMode.GrandPrix);
+        GameState.CurrentSession.AiCount = 7;
+        Navigation.NavigateTo("/character-select");
+    }
+
+    private void StartTimeTrial()
+    {
+        GameState.StartNewSession(GameMode.TimeTrial);
+        GameState.CurrentSession.AiCount = 0;
+        Navigation.NavigateTo("/character-select");
+    }
+
+    private void StartVsRace()
+    {
+        GameState.StartNewSession(GameMode.VsRace);
+        GameState.CurrentSession.AiCount = 7;
+        Navigation.NavigateTo("/character-select");
+    }
+
+    private void StartBattleMode()
+    {
+        GameState.StartNewSession(GameMode.BattleMode);
+        Navigation.NavigateTo("/battle-mode");
+    }
+
+    private void OpenSettings()
+    {
+        ShowMainMenu = false;
+        ShowSettings = true;
+    }
+
+    private void OpenAbout()
+    {
+        ShowMainMenu = false;
+        ShowAbout = true;
+    }
+
+    private void SaveSettings()
+    {
+        BackToMenu();
+    }
+
+    private void BackToMenu()
+    {
+        ShowMainMenu = true;
+        ShowSettings = false;
+        ShowAbout = false;
+    }
+}

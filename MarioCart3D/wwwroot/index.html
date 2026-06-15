@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Mario Kart 3D</title>
+    <base href="/" />
+    <link href="css/app.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="app">
+        <div class="loading" id="loadingScreen">
+            <div class="loading-spinner"></div>
+            <p>Loading Mario Kart 3D...</p>
+            <p id="loadingStatus" style="font-size: 0.9rem; color: #aaa;">Initializing...</p>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="js/three.min.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/game-part1.js"></script>
+    <script src="js/game-part2.js"></script>
+    <script src="js/game-part3.js"></script>
+    <script src="js/dotnet-bridge.js"></script>
+
+    <!--
+        NOTE:
+        - Untuk WPF BlazorWebView, biarkan autostart default agar Blazor otomatis start.
+        - Jika autostart diset false tanpa pemanggilan Blazor.start(), app akan stuck di loading.
+    -->
+    <script src="_framework/blazor.webview.js"></script>
+
+    <script>
+        window.addEventListener('error', function (e) {
+            console.error('JS Error:', e.message, 'at', e.filename, ':', e.lineno);
+            var status = document.getElementById('loadingStatus');
+            if (status) status.textContent = 'Error: ' + e.message;
+        });
+
+        window.addEventListener('unhandledrejection', function (e) {
+            console.error('Unhandled promise rejection:', e.reason);
+            var status = document.getElementById('loadingStatus');
+            if (status) status.textContent = 'Promise Error: ' + e.reason;
+        });
+
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                var status = document.getElementById('loadingStatus');
+                if (status) {
+                    if (typeof THREE === 'undefined') {
+                        status.textContent = 'Error: Three.js failed to load.';
+                    } else {
+                        status.textContent = 'Starting Blazor...';
+                    }
+                }
+            }, 1000);
+        });
+
+        var observer = new MutationObserver(function (mutations) {
+            var app = document.getElementById('app');
+            if (app && app.children.length > 1) {
+                var loading = document.getElementById('loadingScreen');
+                if (loading) loading.style.display = 'none';
+            }
+        });
+        observer.observe(document.getElementById('app'), { childList: true });
+    </script>
+</body>
+</html>

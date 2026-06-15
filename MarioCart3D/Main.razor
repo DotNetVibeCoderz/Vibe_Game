@@ -1,0 +1,30 @@
+@using Microsoft.AspNetCore.Components.Routing
+@using MarioCart3D.Pages
+
+<Router AppAssembly="@typeof(Main).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="typeof(MainLayout)" />
+    </Found>
+    <NotFound>
+        <div class="main-menu">
+            <h1 class="game-title">404</h1>
+            <p class="game-subtitle">Track not found!</p>
+            <a href="/" class="menu-button">Back to Menu</a>
+        </div>
+    </NotFound>
+</Router>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("Main.razor initialized");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Console.WriteLine("Main.razor rendered successfully");
+        }
+    }
+}

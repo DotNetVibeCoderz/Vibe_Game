@@ -1,0 +1,89 @@
+@page "/kart-select"
+@inject GameDataService GameData
+@inject GameStateService GameState
+@inject ProgressionService Progression
+@inject NavigationManager Navigation
+
+<div class="main-menu">
+    <h1 class="game-title">CUSTOMIZE KART</h1>
+    <p class="game-subtitle">Build your perfect racing machine</p>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px;">
+        <div class="settings-group">
+            <h3 style="color: #ffd700; margin-top: 0;">🏎️ Kart Body</h3>
+            @foreach (var kart in Karts)
+            {
+                var isUnlocked = Progression.IsUnlocked(kart.Name, UnlockType.Kart);
+                <div class="card" style="margin-bottom: 10px; opacity: @(isUnlocked ? 1 : 0.5);" @onclick="() => { if (isUnlocked) SelectedKart = kart; }">
+                    <div class="card-title">@kart.Name @(isUnlocked ? "" : "🔒")</div>
+                    <div class="card-desc">@kart.Description</div>
+                    <div class="card-desc">SPD @kart.SpeedMod | ACC @kart.AccelerationMod | HND @kart.HandlingMod</div>
+                </div>
+            }
+        </div>
+
+        <div class="settings-group">
+            <h3 style="color: #ffd700; margin-top: 0;">🛞 Wheels</h3>
+            @foreach (var wheel in Wheels)
+            {
+                <div class="card" style="margin-bottom: 10px;" @onclick="() => SelectedWheels = wheel">
+                    <div class="card-title">@wheel.Name</div>
+                    <div class="card-desc">@wheel.Description</div>
+                    <div class="card-desc">SPD @wheel.SpeedMod | ACC @wheel.AccelerationMod | HND @wheel.HandlingMod</div>
+                </div>
+            }
+        </div>
+
+        <div class="settings-group">
+            <h3 style="color: #ffd700; margin-top: 0;">🪂 Glider</h3>
+            @foreach (var glider in Gliders)
+            {
+                <div class="card" style="margin-bottom: 10px;" @onclick="() => SelectedGlider = glider">
+                    <div class="card-title">@glider.Name</div>
+                    <div class="card-desc">@glider.Description</div>
+                    <div class="card-desc">AIR SPD @glider.AirSpeedMod | AIR HND @glider.AirHandlingMod</div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <button class="menu-button" @onclick="ContinueToTrack">✅ Continue</button>
+        <button class="menu-button back-button" @onclick="BackToCharacter">⬅️ Back</button>
+    </div>
+</div>
+
+@code {
+    private List<Kart> Karts { get; set; } = new();
+    private List<Wheel> Wheels { get; set; } = new();
+    private List<Glider> Gliders { get; set; } = new();
+
+    private Kart? SelectedKart { get; set; }
+    private Wheel? SelectedWheels { get; set; }
+    private Glider? SelectedGlider { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Karts = GameData.GetKarts();
+        Wheels = GameData.GetWheels();
+        Gliders = GameData.GetGliders();
+
+        SelectedKart = Karts.FirstOrDefault(k => Progression.IsUnlocked(k.Name, UnlockType.Kart));
+        SelectedWheels = Wheels.FirstOrDefault();
+        SelectedGlider = Gliders.FirstOrDefault();
+    }
+
+    private void ContinueToTrack()
+    {
+        if (SelectedKart != null) GameState.CurrentSession.SelectedKart = SelectedKart;
+        if (SelectedWheels != null) GameState.CurrentSession.SelectedWheels = SelectedWheels;
+        if (SelectedGlider != null) GameState.CurrentSession.SelectedGlider = SelectedGlider;
+
+        Navigation.NavigateTo("/track-select");
+    }
+
+    private void BackToCharacter()
+    {
+        Navigation.NavigateTo("/character-select");
+    }
+}

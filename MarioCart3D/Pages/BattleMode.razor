@@ -1,0 +1,136 @@
+@page "/battle-mode"
+@inject IJSRuntime JS
+@inject GameDataService GameData
+@inject GameStateService GameState
+@inject ItemManager ItemManager
+@inject AudioService AudioService
+@inject ProgressionService Progression
+@inject NavigationManager Navigation
+
+<div class="game-container">
+    <canvas id="battleCanvas" class="game-canvas"></canvas>
+
+    <div class="ui-overlay">
+        <div class="hud">
+            <div class="hud-item">❤️ Lives: @Lives</div>
+            <div class="hud-item">⏱️ @FormattedTime</div>
+            <div class="hud-item">🏆 Score: @Score</div>
+            <div class="hud-item">🪙 Coins: @Coins</div>
+        </div>
+
+        @if (CurrentItem != null)
+        {
+            <div style="position: absolute; bottom: 30px; right: 30px; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 15px; border: 3px solid #ffd700;">
+                <div style="font-size: 3rem; text-align: center;">@CurrentItem.Icon</div>
+                <div style="color: white; font-weight: bold;">@CurrentItem.Name</div>
+                <div style="color: #aaa; font-size: 0.8rem;">Press SPACE to use</div>
+            </div>
+        }
+
+        @if (BattleOver)
+        {
+            <div class="main-menu">
+                <h1 class="game-title">BATTLE OVER</h1>
+                <p class="game-subtitle">Final Score: @Score</p>
+                <button class="menu-button" @onclick="BackToMenu">🏠 Main Menu</button>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private int Lives { get; set; } = 3;
+    private int Score { get; set; } = 0;
+    private int Coins { get; set; } = 0;
+    private string FormattedTime { get; set; } = "00:00.00";
+    private PowerUp? CurrentItem { get; set; }
+    private bool BattleOver { get; set; } = false;
+
+    private System.Timers.Timer? _gameTimer;
+    private DotNetObjectReference<BattleMode>? _dotNetRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("gameEngine.registerDotNet", _dotNetRef);
+
+            await JS.InvokeVoidAsync("gameEngine.init", "battleCanvas");
+            await JS.InvokeVoidAsync("gameEngine.setPlayerKart", HexToInt("#e94560"));
+            await JS.InvokeVoidAsync("gameEngine.changeTrack", "castle");
+            await AudioService.PlayBackgroundMusic("Castle");
+            await JS.InvokeVoidAsync("gameEngine.start");
+
+            GameState.StartRace();
+
+            _gameTimer = new System.Timers.Timer(100);
+            _gameTimer.Elapsed += OnTimerElapsed;
+            _gameTimer.AutoReset = true;
+            _gameTimer.Start();
+        }
+    }
+
+    private void OnTimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
+    {
+        if (BattleOver) return;
+
+        GameState.UpdateElapsedTime();
+        FormattedTime = GameState.ElapsedTime.ToString(@"mm\:ss\.ff");
+
+        if (Lives <= 0 && !BattleOver)
+        {
+            BattleOver = true;
+            Progression.AddCoins(Coins);
+        }
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public async Task OnItemBoxHit(float x, float z)
+    {
+        ItemManager.RollItemBox();
+        CurrentItem = ItemManager.CurrentItem;
+        if (CurrentItem != null)
+        {
+            await AudioService.PlayItemSound(CurrentItem.Name);
+        }
+        Coins++;
+        Score += 50;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public void OnKeyDown(string key)
+    {
+        if (key == " " && CurrentItem != null)
+        {
+            ItemManager.UseItem();
+            Score += 100;
+            CurrentItem = null;
+            StateHasChanged();
+        }
+    }
+
+    private async void BackToMenu()
+    {
+        _gameTimer?.Stop();
+        _gameTimer?.Dispose();
+        await AudioService.StopMusic();
+        Navigation.NavigateTo("/");
+    }
+
+    private int HexToInt(string hex)
+    {
+        if (hex.StartsWith("#")) hex = hex.Substring(1);
+        return int.Parse(hex, System.Globalization.NumberStyles.HexNumber);
+    }
+
+    public void Dispose()
+    {
+        _gameTimer?.Stop();
+        _gameTimer?.Dispose();
+        _dotNetRef?.Dispose();
+    }
+}

@@ -1,0 +1,65 @@
+@page "/track-select"
+@inject GameDataService GameData
+@inject GameStateService GameState
+@inject ProgressionService Progression
+@inject NavigationManager Navigation
+
+<div class="main-menu">
+    <h1 class="game-title">SELECT TRACK</h1>
+    <p class="game-subtitle">Pick your battlefield</p>
+
+    <div class="menu-grid" style="grid-template-columns: repeat(3, 1fr); max-width: 900px;">
+        @foreach (var track in Tracks)
+        {
+            var isUnlocked = Progression.IsUnlocked(track.Name, UnlockType.Track);
+            <div class="card" @onclick="() => SelectTrack(track)">
+                <div class="card-title" style="font-size: 2rem;">@GetTrackEmoji(track.Theme)</div>
+                <div class="card-title">@track.Name</div>
+                <div class="card-desc">@track.Description</div>
+                <div class="card-desc" style="margin-top: 10px;">
+                    Theme: @track.Theme | Difficulty: @track.Difficulty
+                </div>
+                @if (!isUnlocked)
+                {
+                    <div class="card-desc" style="color: #e94560;">🔒 Locked</div>
+                }
+            </div>
+        }
+    </div>
+
+    <button class="menu-button back-button" @onclick="BackToKart">⬅️ Back</button>
+</div>
+
+@code {
+    private List<RaceTrack> Tracks { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        Tracks = GameData.GetTracks();
+    }
+
+    private void SelectTrack(RaceTrack track)
+    {
+        if (!Progression.IsUnlocked(track.Name, UnlockType.Track)) return;
+
+        GameState.CurrentSession.Track = track;
+        GameState.CurrentSession.Laps = track.Laps;
+        Navigation.NavigateTo("/race");
+    }
+
+    private void BackToKart()
+    {
+        Navigation.NavigateTo("/kart-select");
+    }
+
+    private string GetTrackEmoji(string theme) => theme switch
+    {
+        "Grassland" => "🌿",
+        "Castle" => "🏰",
+        "Space" => "🌈",
+        "Beach" => "🏖️",
+        "Haunted" => "👻",
+        "Mountain" => "⛰️",
+        _ => "🏁"
+    };
+}

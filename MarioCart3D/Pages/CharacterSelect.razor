@@ -1,0 +1,64 @@
+@page "/character-select"
+@inject GameDataService GameData
+@inject GameStateService GameState
+@inject ProgressionService Progression
+@inject NavigationManager Navigation
+
+<div class="main-menu">
+    <h1 class="game-title">SELECT RACER</h1>
+    <p class="game-subtitle">Choose your character</p>
+
+    <div class="menu-grid" style="grid-template-columns: repeat(3, 1fr); max-width: 900px;">
+        @foreach (var racer in Racers)
+        {
+            var isUnlocked = Progression.IsUnlocked(racer.Name, UnlockType.Character);
+            <div class="card" @onclick="() => SelectRacer(racer)">
+                <div class="card-title" style="font-size: 2rem;">@GetCharacterEmoji(racer.Name)</div>
+                <div class="card-title">@racer.Name</div>
+                <div class="card-desc">@racer.Description</div>
+                <div class="card-desc" style="margin-top: 10px;">
+                    ⚡ @racer.Speed | 🚀 @racer.Acceleration | 🎮 @racer.Handling | ⚖️ @racer.Weight
+                </div>
+                @if (!isUnlocked)
+                {
+                    <div class="card-desc" style="color: #e94560;">🔒 Locked</div>
+                }
+            </div>
+        }
+    </div>
+
+    <button class="menu-button back-button" @onclick="BackToMenu">⬅️ Back</button>
+</div>
+
+@code {
+    private List<Racer> Racers { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        Racers = GameData.GetRacers();
+    }
+
+    private void SelectRacer(Racer racer)
+    {
+        if (!Progression.IsUnlocked(racer.Name, UnlockType.Character)) return;
+
+        GameState.CurrentSession.PlayerRacer = racer;
+        Navigation.NavigateTo("/kart-select");
+    }
+
+    private void BackToMenu()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    private string GetCharacterEmoji(string name) => name switch
+    {
+        "Mario" => "🍄",
+        "Luigi" => "🌿",
+        "Peach" => "👑",
+        "Bowser" => "🐢",
+        "Yoshi" => "🦖",
+        "Toad" => "🍄",
+        _ => "🏎️"
+    };
+}
